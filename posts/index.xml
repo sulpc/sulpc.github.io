@@ -12,14 +12,6 @@
     <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>]]></description>
 </item>
 <item>
-    <title>关于 LoveIt</title>
-    <link>https://sulpc.github.io/posts/about/</link>
-    <pubDate>Sun, 01 Jan 2023 00:00:00 &#43;0000</pubDate>
-    <author>suplc</author>
-    <guid>https://sulpc.github.io/posts/about/</guid>
-    <description><![CDATA[<p>关于</p>]]></description>
-</item>
-<item>
     <title>Markdown 基本语法</title>
     <link>https://sulpc.github.io/posts/basic-markdown-syntax/</link>
     <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
