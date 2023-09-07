@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>hugo - Tag - glob s&#39;sulpc</title>
+        <link>https://sulpc.github.io/tags/hugo/</link>
+        <description>hugo - Tag - glob s&#39;sulpc</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate><atom:link href="https://sulpc.github.io/tags/hugo/" rel="self" type="application/rss+xml" /><item>
+    <title>使用github.io和hugo建立博客</title>
+    <link>https://sulpc.github.io/posts/github-io/</link>
+    <pubDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/posts/github-io/</guid>
+    <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>]]></description>
+</item>
+</channel>
+</rss>

@@ -1,0 +1,33 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>glob s&#39;sulpc</title>
+        <link>https://sulpc.github.io/</link>
+        <description>Hugo theme - LoveIt</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate>
+            <atom:link href="https://sulpc.github.io/index.xml" rel="self" type="application/rss+xml" />
+        <item>
+    <title>使用github.io和hugo建立博客</title>
+    <link>https://sulpc.github.io/posts/github-io/</link>
+    <pubDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/posts/github-io/</guid>
+    <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>]]></description>
+</item>
+<item>
+    <title>关于 LoveIt</title>
+    <link>https://sulpc.github.io/posts/about/</link>
+    <pubDate>Sun, 01 Jan 2023 00:00:00 &#43;0000</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/posts/about/</guid>
+    <description><![CDATA[<p>关于</p>]]></description>
+</item>
+<item>
+    <title>Markdown 基本语法</title>
+    <link>https://sulpc.github.io/posts/basic-markdown-syntax/</link>
+    <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/posts/basic-markdown-syntax/</guid>
+    <description><![CDATA[<p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p>]]></description>
+</item>
+</channel>
+</rss>

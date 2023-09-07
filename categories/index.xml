@@ -1,0 +1,23 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Categories - Category - glob s&#39;sulpc</title>
+        <link>https://sulpc.github.io/categories/</link>
+        <description>Categories - Category - glob s&#39;sulpc</description>
+        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate><atom:link href="https://sulpc.github.io/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>article</title>
+    <link>https://sulpc.github.io/categories/article/</link>
+    <pubDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/categories/article/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Markdown</title>
+    <link>https://sulpc.github.io/categories/markdown/</link>
+    <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/categories/markdown/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>
