@@ -1,9 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Markdown - Category - glob s&#39;sulpc</title>
+        <title>markdown - 分类 - sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/categories/markdown/</link>
-        <description>Markdown - Category - glob s&#39;sulpc</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/markdown/" rel="self" type="application/rss+xml" /><item>
+        <description>markdown - 分类 - sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/markdown/" rel="self" type="application/rss+xml" /><item>
     <title>Markdown 基本语法</title>
     <link>https://sulpc.github.io/posts/basic-markdown-syntax/</link>
     <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>

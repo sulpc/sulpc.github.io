@@ -1,9 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Tags - Tag - glob s&#39;sulpc</title>
+        <title>Tags - 标签 - sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/tags/</link>
-        <description>Tags - Tag - glob s&#39;sulpc</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate><atom:link href="https://sulpc.github.io/tags/" rel="self" type="application/rss+xml" /><item>
+        <description>Tags - 标签 - sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate><atom:link href="https://sulpc.github.io/tags/" rel="self" type="application/rss+xml" /><item>
     <title>hugo</title>
     <link>https://sulpc.github.io/tags/hugo/</link>
     <pubDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</pubDate>
@@ -12,7 +12,7 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>HTML</title>
+    <title>html</title>
     <link>https://sulpc.github.io/tags/html/</link>
     <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
@@ -20,7 +20,7 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>Markdown</title>
+    <title>markdown</title>
     <link>https://sulpc.github.io/tags/markdown/</link>
     <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>

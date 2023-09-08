@@ -1,9 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>glob s&#39;sulpc</title>
+        <title>sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/</link>
-        <description>Hugo theme - LoveIt</description>
-        <generator>Hugo -- gohugo.io</generator><language>en</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate>
+        <description>sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 15:16:10 &#43;0800</lastBuildDate>
             <atom:link href="https://sulpc.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
     <title>使用github.io和hugo建立博客</title>
