@@ -1,13 +1,13 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>html - 标签 - sulpc&#39;s blog</title>
+        <title>HTML - 标签 - sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/tags/html/</link>
-        <description>html - 标签 - sulpc&#39;s blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/tags/html/" rel="self" type="application/rss+xml" /><item>
+        <description>HTML - 标签 - sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 01 Dec 2019 21:57:40 &#43;0800</lastBuildDate><atom:link href="https://sulpc.github.io/tags/html/" rel="self" type="application/rss+xml" /><item>
     <title>Markdown 基本语法</title>
     <link>https://sulpc.github.io/posts/basic-markdown-syntax/</link>
-    <pubDate>Sun, 01 Dec 2019 00:00:00 &#43;0000</pubDate>
-    <author>suplc</author>
+    <pubDate>Sun, 01 Dec 2019 21:57:40 &#43;0800</pubDate>
+    <author>Dillon</author>
     <guid>https://sulpc.github.io/posts/basic-markdown-syntax/</guid>
     <description><![CDATA[<p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p>]]></description>
 </item>
