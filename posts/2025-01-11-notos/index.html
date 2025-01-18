@@ -162,7 +162,7 @@
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></td></tr></table>
 </div>
-</div><p>当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。</p>
+</div><p>当然实际上，如果不利用底层平台的一些特性，无法实现真正的上下文切换（像常规OS那样）。C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。</p>
 <p>根据<a href="https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" target="_blank" rel="noopener noreffer ">Coroutines in C</a>中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
