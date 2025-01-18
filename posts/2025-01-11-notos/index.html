@@ -7,12 +7,7 @@
         <title>notos：一个基于C的无栈协程库 - sulpc&#39;s blog</title><meta name="Description" content="sulpc&#39;s blog"><meta property="og:url" content="https://sulpc.github.io/posts/2025-01-11-notos/">
   <meta property="og:site_name" content="sulpc&#39;s blog">
   <meta property="og:title" content="notos：一个基于C的无栈协程库">
-  <meta property="og:description" content="notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
-notos最终要达到用起来类似os的效果，也就是能这样使用：
-1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
-1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, &#43;&#43;data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
-根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
-1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：">
+  <meta property="og:description" content="这篇文章介绍 notos，一个基于 C 实现的提供了类 RTOS 调用接口的无栈协程库，源码在 github 开源。">
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="posts">
@@ -26,12 +21,7 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://sulpc.github.io/img/logo.jpg">
   <meta name="twitter:title" content="notos：一个基于C的无栈协程库">
-  <meta name="twitter:description" content="notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
-notos最终要达到用起来类似os的效果，也就是能这样使用：
-1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
-1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, &#43;&#43;data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
-根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
-1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：">
+  <meta name="twitter:description" content="这篇文章介绍 notos，一个基于 C 实现的提供了类 RTOS 调用接口的无栈协程库，源码在 github 开源。">
 <meta name="application-name" content="My cool site">
 <meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c">
   <link href='https://sulpc.github.io/img/logo.ico' rel='icon' type='image/x-icon'/><link rel="canonical" href="https://sulpc.github.io/posts/2025-01-11-notos/" /><link rel="prev" href="https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -45,7 +35,7 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
         "mainEntityOfPage": {
             "@type": "WebPage",
             "@id": "https:\/\/sulpc.github.io\/posts\/2025-01-11-notos\/"
-        },"genre": "posts","keywords": "c, coroutine, rtos","wordcount":  450 ,
+        },"genre": "posts","keywords": "c, coroutine, rtos","wordcount":  457 ,
         "url": "https:\/\/sulpc.github.io\/posts\/2025-01-11-notos\/","datePublished": "2025-01-11T00:00:00+00:00","dateModified": "2025-01-11T00:00:00+00:00","publisher": {
             "@type": "Organization",
             "name": ""},"author": {
@@ -111,7 +101,7 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
                 </div>
                 <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
   <ul>
-    <li><a href="#notoshttpsgithubcomsulpcnotos"><a href="https://github.com/sulpc/notos">notos</a></a>
+    <li>
       <ul>
         <li><a href="#nos-is-not-os">nos is not os</a></li>
         <li><a href="#implement-nos-task">implement nos task</a></li>
@@ -123,9 +113,9 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
     </li>
   </ul>
 </nav></div>
-            </div><div class="content" id="content"><h1 id="notoshttpsgithubcomsulpcnotos"><a href="https://github.com/sulpc/notos" target="_blank" rel="noopener noreffer ">notos</a></h1>
+            </div><div class="content" id="content"><p>这篇文章介绍 <a href="https://github.com/sulpc/notos" target="_blank" rel="noopener noreffer ">notos</a>，一个基于 C 实现的提供了类 RTOS 调用接口的无栈协程库，源码在 github 开源。</p>
 <h2 id="nos-is-not-os">nos is not os</h2>
-<p>notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。</p>
+<p><code>notos</code>不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。</p>
 <p>notos最终要达到用起来类似os的效果，也就是能这样使用：</p>
 <div class="highlight"><div class="chroma">
 <table class="lntable"><tr><td class="lntd">
@@ -466,8 +456,7 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
 <p>nos可用作裸机应用，但裸机应用时app和isr之间共享数据的同步问题，这里自然也会遇到。解决办法当然也非常简单，这里不再多言。</p>
 <p>nos可与os结合，则整个nos将运行在一个线程里。此时可在每轮调度之后添加任务休眠，避免死循环忙等待。nos线程和其他线程之间的数据同步，利用该os所提供的机制进行保护。</p>
 <p>不要在nos所在线程之外调用任何nos提供的接口。nos及各nos task中不应调用任何阻塞函数，否则会将整个nos阻塞住。</p>
-<p>nos与外部线程之间的数据交互，建议在main函数schedule间隙或定时器回调函数中处理。</p>
-</div><div class="post-footer" id="post-footer">
+<p>nos与外部线程之间的数据交互，建议在main函数schedule间隙或定时器回调函数中处理。</p></div><div class="post-footer" id="post-footer">
     <div class="post-info">
         <div class="post-info-line">
             <div class="post-info-mod">
@@ -488,12 +477,11 @@ notos最终要达到用起来类似os的效果，也就是能这样使用：
         </section>
     </div>
 
-    
     <div class="post-nav"><a href="/posts/2023-09-06-github.io-hugo-blog/" class="prev" rel="prev" title="使用github.io和hugo建立博客"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用github.io和hugo建立博客</a></div>
 </div>
 </article></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="links"><a href="%3cnil%3e" rel="me"></a><a href="https://github.com/sulpc" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a></div><div class="footer-line">welcome to visit!</div><div class="footer-line">Powered by  <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"> LoveIt</a>
+        <div class="footer-container"><div class="footer-line">我见青山多妩媚，料青山见我应如是。</div><div class="footer-line">Powered by  <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"></div>
         </div>
     </footer></div>

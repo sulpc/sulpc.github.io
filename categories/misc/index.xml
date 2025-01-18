@@ -9,8 +9,7 @@
     <pubDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
     <guid>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</guid>
-    <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>
-<p><a href="https://github.com/gohugoio/hugo" target="_blank" rel="noopener noreffer ">hugo</a>是Go编写的静态网站生成器，可将Markdown文件渲染为静态网页内容，非常适合博客、文档等网站的生成。</p>]]></description>
+    <description><![CDATA[<p>这篇文章介绍如何使用 github.io 和 hugo 建立个人博客。</p>]]></description>
 </item>
 </channel>
 </rss>
