@@ -3,24 +3,37 @@
         <title>sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/</link>
         <description>sulpc&#39;s blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</lastBuildDate>
             <atom:link href="https://sulpc.github.io/index.xml" rel="self" type="application/rss+xml" />
         <item>
-    <title>Markdown 基本语法</title>
-    <link>https://sulpc.github.io/posts/basic-markdown-syntax/</link>
-    <pubDate>Sun, 01 Dec 2019 21:57:40 &#43;0800</pubDate>
-    <author>Dillon</author>
-    <guid>https://sulpc.github.io/posts/basic-markdown-syntax/</guid>
-    <description><![CDATA[<p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p>]]></description>
+    <title>notos：一个基于C的无栈协程库</title>
+    <link>https://sulpc.github.io/posts/2025-01-11-notos/</link>
+    <pubDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/posts/2025-01-11-notos/</guid>
+    <description><![CDATA[notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
+notos最终要达到用起来类似os的效果，也就是能这样使用：
+1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
+1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, ++data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
+根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
+1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：]]></description>
 </item>
 <item>
     <title>使用github.io和hugo建立博客</title>
-    <link>https://sulpc.github.io/posts/2023-09-06/</link>
+    <link>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</link>
     <pubDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
-    <guid>https://sulpc.github.io/posts/2023-09-06/</guid>
+    <guid>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</guid>
     <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>
 <p><a href="https://github.com/gohugoio/hugo" target="_blank" rel="noopener noreffer ">hugo</a>是Go编写的静态网站生成器，可将Markdown文件渲染为静态网页内容，非常适合博客、文档等网站的生成。</p>]]></description>
+</item>
+<item>
+    <title>Markdown 基本语法</title>
+    <link>https://sulpc.github.io/posts/2019-12-01-basic-markdown-syntax/</link>
+    <pubDate>Sun, 01 Dec 2019 21:57:40 &#43;0800</pubDate>
+    <author>Dillon</author>
+    <guid>https://sulpc.github.io/posts/2019-12-01-basic-markdown-syntax/</guid>
+    <description><![CDATA[<p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p>]]></description>
 </item>
 </channel>
 </rss>

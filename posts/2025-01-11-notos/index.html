@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>notos：一个基于C的无栈协程库 - sulpc&#39;s blog</title><meta name="Description" content="sulpc&#39;s blog"><meta property="og:url" content="https://sulpc.github.io/posts/2025-01-11-notos/">
+  <meta property="og:site_name" content="sulpc&#39;s blog">
+  <meta property="og:title" content="notos：一个基于C的无栈协程库">
+  <meta property="og:description" content="notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
+notos最终要达到用起来类似os的效果，也就是能这样使用：
+1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
+1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, &#43;&#43;data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
+根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
+1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-11T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-01-11T00:00:00+00:00">
+    <meta property="article:tag" content="C">
+    <meta property="article:tag" content="Coroutine">
+    <meta property="article:tag" content="Rtos">
+    <meta property="og:image" content="https://sulpc.github.io/img/logo.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sulpc.github.io/img/logo.jpg">
+  <meta name="twitter:title" content="notos：一个基于C的无栈协程库">
+  <meta name="twitter:description" content="notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
+notos最终要达到用起来类似os的效果，也就是能这样使用：
+1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
+1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, &#43;&#43;data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
+根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
+1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：">
+<meta name="application-name" content="My cool site">
+<meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c">
+  <link href='https://sulpc.github.io/img/logo.ico' rel='icon' type='image/x-icon'/><link rel="canonical" href="https://sulpc.github.io/posts/2025-01-11-notos/" /><link rel="prev" href="https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "notos：一个基于C的无栈协程库",
+        "inLanguage": "zh",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "https:\/\/sulpc.github.io\/posts\/2025-01-11-notos\/"
+        },"genre": "posts","keywords": "c, coroutine, rtos","wordcount":  450 ,
+        "url": "https:\/\/sulpc.github.io\/posts\/2025-01-11-notos\/","datePublished": "2025-01-11T00:00:00+00:00","dateModified": "2025-01-11T00:00:00+00:00","publisher": {
+            "@type": "Organization",
+            "name": ""},"author": {
+                "@type": "Person",
+                "name": "suplc"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="sulpc&#39;s blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/logo.jpg"
+        data-srcset="/img/logo.jpg, /img/logo.jpg 1.5x, /img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="/img/logo.jpg"
+        title="/img/logo.jpg" /><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/posts" title="All Posts"> 文章 </a><a class="menu-item" href="/tags" title="All Tags"> 标签 </a><a class="menu-item" href="/categories" title="All Categories"> 分类 </a><a class="menu-item" href="/about" title="About Me"> 关于 </a><span class="menu-item delimiter"></span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="sulpc&#39;s blog"><img
+        class="lazyload logo"
+        src="/svg/loading.min.svg"
+        data-src="/img/logo.jpg"
+        data-srcset="/img/logo.jpg, /img/logo.jpg 1.5x, /img/logo.jpg 2x"
+        data-sizes="auto"
+        alt="/img/logo.jpg"
+        title="/img/logo.jpg" /><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><a class="menu-item" href="/posts" title="All Posts">文章</a><a class="menu-item" href="/tags" title="All Tags">标签</a><a class="menu-item" href="/categories" title="All Categories">分类</a><a class="menu-item" href="/about" title="About Me">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">notos：一个基于C的无栈协程库</h1><div class="post-meta">
+            <div class="post-meta-line">
+                
+            </div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-01-11">2025-01-11</time>&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#notoshttpsgithubcomsulpcnotos"><a href="https://github.com/sulpc/notos">notos</a></a>
+      <ul>
+        <li><a href="#nos-is-not-os">nos is not os</a></li>
+        <li><a href="#implement-nos-task">implement nos task</a></li>
+        <li><a href="#async-call">async call</a></li>
+        <li><a href="#sleep-and-timer">sleep and timer</a></li>
+        <li><a href="#semaphore">semaphore</a></li>
+        <li><a href="#usage-of-nos">usage of nos</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="notoshttpsgithubcomsulpcnotos"><a href="https://github.com/sulpc/notos" target="_blank" rel="noopener noreffer ">notos</a></h1>
+<h2 id="nos-is-not-os">nos is not os</h2>
+<p>notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。</p>
+<p>notos最终要达到用起来类似os的效果，也就是能这样使用：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">os_init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">os_task_create</span><span class="p">(</span><span class="n">task1</span><span class="p">,</span> <span class="n">task_func1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">os_task_create</span><span class="p">(</span><span class="n">task2</span><span class="p">,</span> <span class="n">task_func1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">os_start</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// unreachable
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>每个任务函数要能这样去写，看上去都是一个无限的循环：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">TASK</span><span class="p">(</span><span class="n">test_sleep</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">data</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">task_sleep</span><span class="p">(</span><span class="mi">500</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">task_exit</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。</p>
+<p>根据<a href="https://www.chiark.greenend.org.uk/~sgtatham/coroutines.html" target="_blank" rel="noopener noreffer ">Coroutines in C</a>中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define tco_init(bp)                  bp = 0;
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define tco_begin(bp)                 switch(bp) { case 0:
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define tco_yeild(bp)                 bp = __LINE__; return; case __LINE__:
+</span></span></span><span class="line"><span class="cl"><span class="cp">#define tco_end()                     }
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以写出这样的函数：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">trick_func</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="kt">int</span> <span class="n">bp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">static</span> <span class="kt">int</span> <span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">tco_begin</span><span class="p">(</span><span class="n">bp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">data</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;out %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="o">++</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">tco_yeild</span><span class="p">(</span><span class="n">bp</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">tco_end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>连续调用<code>trick_func</code>，就会打印：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">out</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">out</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="n">out</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl"><span class="n">out</span> <span class="mi">4</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h2 id="implement-nos-task">implement nos task</h2>
+<p>Not os，也就没有真正意义上的task，有的只有一些利用这样特殊方法写成的C函数。所谓的调度，不过是不断重复去调用该函数。</p>
+<p>因此nos_task的核心数据结构只有：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nos_task</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>               <span class="n">bp</span><span class="p">;</span>   <span class="c1">// coroutine break point
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">async_func_t</span>      <span class="n">func</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span><span class="o">*</span>             <span class="n">arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">util_queue_node_t</span> <span class="n">qnode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>bp</code>自不用说，要在别处去调用该函数，就需要把函数指针和参数保存下来，<code>qnode</code>负责将task串成列表，以供nos遍历访问。</p>
+<p>为了更像那么回事，通过一些宏，最终可以这样创建一个task：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span><span class="lnt">23
+</span><span class="lnt">24
+</span><span class="lnt">25
+</span><span class="lnt">26
+</span><span class="lnt">27
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">async_function</span><span class="p">(</span><span class="n">test_sleep</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">_local</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="o">*</span>  <span class="n">local</span>     <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">_local</span><span class="o">*</span><span class="p">)</span><span class="nf">async_localdata</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_local</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">period_ms</span> <span class="o">=</span> <span class="nf">async_getarg</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">async_function_start</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%s.%s -&gt; %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">async_taskname</span><span class="p">(),</span> <span class="n">__func__</span><span class="p">,</span> <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">async_sleep</span><span class="p">(</span><span class="n">period_ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%s.%s finish.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="nf">async_taskname</span><span class="p">(),</span> <span class="n">__func__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">async_return</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">async_function_end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">period_ms</span> <span class="o">=</span> <span class="mi">500</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">nos_task_create</span><span class="p">(</span><span class="n">task_sleep</span><span class="p">,</span> <span class="n">test_sleep</span><span class="p">,</span> <span class="n">period_ms</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nf">nos_schedule</span><span class="p">())</span> <span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>无论看起来像怎么回事，任务函数本质上仍然只是一个普通的非阻塞的C函数，每次重新调用，其中的局部变量都会重置，不能像真正的task那样用局部变量保存状态。</p>
+<p>因此提供了一个localdata来实现这种需求，模拟“任务中的局部变量”。该数据内存为动态申请，但又不能每次调用都重新申请一个，而且将来也需要被释放，于是task的数据结构中需要多一个指针成员来保存该数据地址。</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span><span class="lnt">7
+</span><span class="lnt">8
+</span><span class="lnt">9
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nos_task</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span>       <span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>               <span class="n">bp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">async_func_t</span>      <span class="n">func</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span><span class="o">*</span>             <span class="n">localdata</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span><span class="o">*</span>             <span class="n">arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span>          <span class="n">ts</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">util_queue_node_t</span> <span class="n">qnode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>还多了一个<code>name</code>，便于标识task；还有一个<code>ts</code>，用来保存时间值，用来实现<code>task_sleep</code>接口的功能。</p>
+<h2 id="async-call">async call</h2>
+<p>nos的任务函数是一个所谓<code>async function</code>，而我想在这样一个async函数中调用其它的async函数。</p>
+<p>比如：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span><span class="lnt">14
+</span><span class="lnt">15
+</span><span class="lnt">16
+</span><span class="lnt">17
+</span><span class="lnt">18
+</span><span class="lnt">19
+</span><span class="lnt">20
+</span><span class="lnt">21
+</span><span class="lnt">22
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="nf">async_function</span><span class="p">(</span><span class="n">test_acall_base</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">_local</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="o">*</span> <span class="n">local</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">_local</span><span class="o">*</span><span class="p">)</span><span class="nf">async_localdata</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">_local</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">async_function_start</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">async_yeild</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nf">async_call</span><span class="p">(</span><span class="n">test_acall_sub</span><span class="p">,</span> <span class="n">nullptr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">;</span> <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">local</span><span class="o">-&gt;</span><span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">async_return</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">async_yeild</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">async_function_end</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>由于它本质上还是普通的C函数，因此并不会真正如看上去的那般，只在<code>async_return</code>的时候才返回。而且就算返回，也不可能<code>return</code>到它的“调用者”那里。以上面的<code>test_acall_sub</code>为例，它真正的调用者并不是<code>test_acall_base</code>，而是<code>nos_schedule</code>。</p>
+<p><code>nos_schedule</code>的所谓调度，本质只是不断调用每个task的<code>func</code>函数。如果task中调用了其他async函数，那<code>func</code>这个task的“前台函数”就会变成新的async函数。同时，在该async函数“返回”，也应能恢复到上一级函数。</p>
+<p>task的数据结构变为：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt"> 1
+</span><span class="lnt"> 2
+</span><span class="lnt"> 3
+</span><span class="lnt"> 4
+</span><span class="lnt"> 5
+</span><span class="lnt"> 6
+</span><span class="lnt"> 7
+</span><span class="lnt"> 8
+</span><span class="lnt"> 9
+</span><span class="lnt">10
+</span><span class="lnt">11
+</span><span class="lnt">12
+</span><span class="lnt">13
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nos_task</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span><span class="o">*</span>       <span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">nos_context_t</span><span class="o">*</span>    <span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint32_t</span>          <span class="n">ts</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">util_queue_node_t</span> <span class="n">qnode</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">nos_context</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span>            <span class="n">bp</span><span class="p">;</span>   <span class="c1">// coroutine break point
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">async_func_t</span>   <span class="n">func</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span><span class="o">*</span>          <span class="n">localdata</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span><span class="o">*</span>          <span class="n">arg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">nos_context_t</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>调用<code>async_call</code>，即创建一个新的nos_context，并更新task当前的context。</p>
+<p>这里有一个地方特殊，<code>async_call</code>需要先更新task的context，再保存当前breakpoint。然而task的context已然切换，再调用<code>async_yeild</code>，断点位置就保存到新函数的上下文了。</p>
+<p>于是添加了一个有些丑陋的接口。<code>action</code>可能有副作用，必须放在保存bp之后；而等再回到这里时，不能再执行它，必须放在恢复点之前：</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#define tco_yeild_after(bp, action)   bp = __LINE__; action; return; case __LINE__:
+</span></span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>async_return</code>时无需再通过<code>async_yeild</code>保存位置，真正<code>return</code>就可。在此之前，需要将当前的context销毁，并让task恢复成上一级的context。</p>
+<h2 id="sleep-and-timer">sleep and timer</h2>
+<p>nos的主函数本质是一个busy-loop，不像常规os那般，由systick驱动。因此sleep也好、timer定时器也好，都是在<code>nos_schedule</code>中查询当前系统时间戳，唤醒超时的task和定时器。除了一个<code>nos_gettimestamp</code>，对外界没有任何依赖。</p>
+<p>这种做法看上去不够聪明，没有事情可做的时候，一直在查询时间，遍历各种列表。但如果需要更“聪明”的解决方案，为何不直接用真正的os。再说，没有任务的时候，cpu本来也不可能真正闲下来。</p>
+<p>sleep和timer的实现过于简单，没有专门说明的必要。而且timer本质上和nos的其他部分完全独立。</p>
+<p>按说延时task和timer均应进行排序，避免每次都遍历整个列表。不过为了省市，这一块并没有处理。</p>
+<p>demo中<code>nos_gettimestamp</code>的实现非常别扭，但在MCU中则可以非常简单。只需一个随定时器中断不段增长的全局时间，该函数只需返回此变量值即可。</p>
+<p>一般以ms为时间单位，从系统启动开始计时，uint32足够几十天时间，因此不考虑时间值溢出回卷问题。</p>
+<h2 id="semaphore">semaphore</h2>
+<p>所有的nos task、timer都和main函数在同一个线程内运行，不存在抢占，因此无需考虑常规多线程环境下的数据竞争问题。不过，除了task自身的sleep和yield外，task之间也需要一种机制来彼此协作。</p>
+<p>nos中实现了一个极简单的sem。等待信号量的task会将自己从任务队列中移除，链接到该sem的队列上。除非有别的task释放信号量，再次将之移入任务队列，否则将不会被调度。</p>
+<p>由于不需要真正的锁，基于sem很容易即可实现mutex和cond。</p>
+<p>sem的出现引入了两个小问题。</p>
+<p><code>nos_schedule</code>中需要遍历task队列，而task可能主动休眠，会将自己从队列中移出，<code>util_queue_foreach_safe</code>确保这种操作是安全的。但有了sem，则task不仅可能将自己从队列移出，还可能移入别的被唤醒的task。</p>
+<p>假设taskA通过信号量“唤醒”了taskB，那taskB起码应该在taskA再下一次被调度之前调度。简单的<code>util_queue_insert</code>只是将新节点挂在整个链表的末尾，如果当前已遍历到最后一个node，使用<code>util_queue_foreach_safe</code>，最后新添加的node将无法在本轮循环中被遍历到。</p>
+<p>这个问题可以通过把被唤醒的task添加到当前task之前来解决。</p>
+<p>此外，如果当前试图通过信号量唤醒某个task的并不是某个task，而是main函数，或某个timer定时器回调函数，此时根本不存在什么“当前task”，无法将被唤醒的task插入到一个合适的位置。</p>
+<p>最终的解决办法是使用两个队列。当前循环正在调度中的task放在一个队列，被激活需要在下一个循环被首先调度的task放在另一个队列。</p>
+<h2 id="usage-of-nos">usage of nos</h2>
+<p>nos当然主要是图个乐，使用一种非常规的C语言技巧实现一些比较神奇的效果。使用也不算方便，在编写代码时需要遵循许多约定和限制。如果不遵守这些规定，编译器往往不能检查出来。</p>
+<p>不过它也有一些独到的优势。</p>
+<p>与裸机应用相比，使用nos，可以一种多线程的思维去编写代码，无需手动处理任务调度、协作、延时的问题。而相比rtos，nos的各task不占用单独的栈空间，任务调度的时间开销也很小。同时，完全不需要考虑访问共享数据可能面临的竞争问题。</p>
+<p>nos可用作裸机应用，但裸机应用时app和isr之间共享数据的同步问题，这里自然也会遇到。解决办法当然也非常简单，这里不再多言。</p>
+<p>nos可与os结合，则整个nos将运行在一个线程里。此时可在每轮调度之后添加任务休眠，避免死循环忙等待。nos线程和其他线程之间的数据同步，利用该os所提供的机制进行保护。</p>
+<p>不要在nos所在线程之外调用任何nos提供的接口。nos及各nos task中不应调用任何阻塞函数，否则会将整个nos阻塞住。</p>
+<p>nos与外部线程之间的数据交互，建议在main函数schedule间隙或定时器回调函数中处理。</p>
+</div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-01-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/c/">C</a>,&nbsp;<a href="/tags/coroutine/">Coroutine</a>,&nbsp;<a href="/tags/rtos/">Rtos</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    
+    <div class="post-nav"><a href="/posts/2023-09-06-github.io-hugo-blog/" class="prev" rel="prev" title="使用github.io和hugo建立博客"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>使用github.io和hugo建立博客</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="links"><a href="%3cnil%3e" rel="me"></a><a href="https://github.com/sulpc" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a></div><div class="footer-line">welcome to visit!</div><div class="footer-line">Powered by  <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"sulpc's blog","id-2":"sulpc's blog"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":200}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

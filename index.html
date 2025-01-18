@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="zh">
     <head>
-	<meta name="generator" content="Hugo 0.118.2">
+	<meta name="generator" content="Hugo 0.127.0">
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="robots" content="noodp" />
-        <title>sulpc&#39;s blog</title><meta name="Description" content="sulpc&#39;s blog"><meta property="og:title" content="sulpc&#39;s blog" />
-<meta property="og:description" content="sulpc&#39;s blog" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://sulpc.github.io/" /><meta property="og:image" content="https://sulpc.github.io/img/logo.jpg"/><meta property="og:site_name" content="sulpc" />
-<meta name="twitter:card" content="summary_large_image"/>
-<meta name="twitter:image" content="https://sulpc.github.io/img/logo.jpg"/>
+        <title>sulpc&#39;s blog</title><meta name="Description" content="sulpc&#39;s blog"><meta property="og:url" content="https://sulpc.github.io/">
+  <meta property="og:site_name" content="sulpc&#39;s blog">
+  <meta property="og:title" content="sulpc&#39;s blog">
+  <meta property="og:description" content="sulpc&#39;s blog">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="website">
+    <meta property="og:image" content="https://sulpc.github.io/img/logo.jpg">
 
-<meta name="twitter:title" content="sulpc&#39;s blog"/>
-<meta name="twitter:description" content="sulpc&#39;s blog"/>
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sulpc.github.io/img/logo.jpg">
+  <meta name="twitter:title" content="sulpc&#39;s blog">
+  <meta name="twitter:description" content="sulpc&#39;s blog">
 <meta name="application-name" content="My cool site">
 <meta name="apple-mobile-web-app-title" content="My cool site"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c">
   <link href='https://sulpc.github.io/img/logo.ico' rel='icon' type='image/x-icon'/><link rel="canonical" href="https://sulpc.github.io/" /><link rel="alternate" href="/index.xml" type="application/rss+xml" title="sulpc&#39;s blog">
@@ -79,33 +82,45 @@
         data-sizes="auto"
         alt="/img/logo.jpg"
         title="/img/logo.jpg" /></a></div><div class="home-subtitle"><div id="id-3" class="typeit"></div></div></div>
-<article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
-            <a href="/posts/basic-markdown-syntax/"><img
-        class="lazyload"
-        src="/svg/loading.min.svg"
-        data-src="/posts/basic-markdown-syntax/featured-image.png"
-        data-srcset="/posts/basic-markdown-syntax/featured-image.png, /posts/basic-markdown-syntax/featured-image.png 1.5x, /posts/basic-markdown-syntax/featured-image.png 2x"
-        data-sizes="auto"
-        alt="/posts/basic-markdown-syntax/featured-image.png"
-        title="这篇文章展示了基本的 Markdown 语法和格式." /></a>
-        </div><h1 class="single-title" itemprop="name headline">
-        <a href="/posts/basic-markdown-syntax/">Markdown 基本语法</a>
+<article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
+        <a href="/posts/2025-01-11-notos/">notos：一个基于C的无栈协程库</a>
     </h1><div class="post-meta">
-        <span class="post-publish">发布于 <time datetime="2019-12-01">2019-12-01</time></span>
-    </div><div class="content"><p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p></div><div class="post-footer">
-        <a href="/posts/basic-markdown-syntax/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/markdown/">Markdown</a>,&nbsp;<a href="/tags/html/">HTML</a></div></div>
+        <span class="post-publish">发布于 <time datetime="2025-01-11">2025-01-11</time></span>
+    </div><div class="content">notos nos is not os notos不是os，只有一两百行代码，勉强算作一个库，核心实现也不依赖底层平台。notos不提供实时性保证，不区分优先级，只提供一种差不多能用的伪多任务并发协作机制。
+notos最终要达到用起来类似os的效果，也就是能这样使用：
+1 2 3 4 5 6 7 int main() { os_init(); os_task_create(task1, task_func1); os_task_create(task2, task_func1); os_start(); // unreachable } 每个任务函数要能这样去写，看上去都是一个无限的循环：
+1 2 3 4 5 6 7 8 9 TASK(test_sleep) { int data = 0; while (true) { printf(&#34;%d\n&#34;, ++data); task_sleep(500); if (data == 10) task_exit(); } } 当然实际上，如果不利用底层平台的一些特性，实现真正的上下文切换（像常规OS那样），C函数不可能在函数体运行过程中突然跳出，转而从另一个函数中间的某个位置开始运行，后面又在某个时刻切回当前位置继续运行。
+根据Coroutines in C中描述的一种trick，利用这几行代码，就可以实现一种近似的效果：
+1 2 3 4 #define tco_init(bp) bp = 0; #define tco_begin(bp) switch(bp) { case 0: #define tco_yeild(bp) bp = __LINE__; return; case __LINE__: #define tco_end() } 可以写出这样的函数：</div><div class="post-footer">
+        <a href="/posts/2025-01-11-notos/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/c/">C</a>,&nbsp;<a href="/tags/coroutine/">Coroutine</a>,&nbsp;<a href="/tags/rtos/">Rtos</a></div></div>
 </article><article class="single summary" itemscope itemtype="http://schema.org/Article"><h1 class="single-title" itemprop="name headline">
-        <a href="/posts/2023-09-06/">使用github.io和hugo建立博客</a>
+        <a href="/posts/2023-09-06-github.io-hugo-blog/">使用github.io和hugo建立博客</a>
     </h1><div class="post-meta">
         <span class="post-publish">发布于 <time datetime="2023-09-06">2023-09-06</time></span>
     </div><div class="content"><p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>
 <p><a href="https://github.com/gohugoio/hugo" target="_blank" rel="noopener noreffer ">hugo</a>是Go编写的静态网站生成器，可将Markdown文件渲染为静态网页内容，非常适合博客、文档等网站的生成。</p></div><div class="post-footer">
-        <a href="/posts/2023-09-06/">阅读全文</a><div class="post-tags">
-                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/hugo/">hugo</a></div></div>
+        <a href="/posts/2023-09-06-github.io-hugo-blog/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/hugo/">Hugo</a>,&nbsp;<a href="/tags/blog/">Blog</a></div></div>
+</article><article class="single summary" itemscope itemtype="http://schema.org/Article"><div class="featured-image-preview">
+            <a href="/posts/2019-12-01-basic-markdown-syntax/"><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="/posts/2019-12-01-basic-markdown-syntax/featured-image.png"
+        data-srcset="/posts/2019-12-01-basic-markdown-syntax/featured-image.png, /posts/2019-12-01-basic-markdown-syntax/featured-image.png 1.5x, /posts/2019-12-01-basic-markdown-syntax/featured-image.png 2x"
+        data-sizes="auto"
+        alt="/posts/2019-12-01-basic-markdown-syntax/featured-image.png"
+        title="这篇文章展示了基本的 Markdown 语法和格式." /></a>
+        </div><h1 class="single-title" itemprop="name headline">
+        <a href="/posts/2019-12-01-basic-markdown-syntax/">Markdown 基本语法</a>
+    </h1><div class="post-meta">
+        <span class="post-publish">发布于 <time datetime="2019-12-01">2019-12-01</time></span>
+    </div><div class="content"><p>这篇文章提供了可以在 Hugo 的文章中使用的基本 Markdown 语法示例.</p></div><div class="post-footer">
+        <a href="/posts/2019-12-01-basic-markdown-syntax/">阅读全文</a><div class="post-tags">
+                <i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/markdown/">Markdown</a>,&nbsp;<a href="/tags/html/">HTML</a></div></div>
 </article></div></div>
             </main><footer class="footer">
-        <div class="footer-container"><div class="links"><a href="%3cnil%3e" rel="me"></a><a href="https://github.com/sulpc" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a></div><div class="footer-line">welcome to visit!</div><div class="footer-line">Powered by  <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.118.2">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"> LoveIt</a>
+        <div class="footer-container"><div class="links"><a href="%3cnil%3e" rel="me"></a><a href="https://github.com/sulpc" title="GitHub" target="_blank" rel="noopener noreffer me"><i class="fab fa-github fa-fw" aria-hidden="true"></i></a></div><div class="footer-line">welcome to visit!</div><div class="footer-line">Powered by  <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.127.0">Hugo</a> | Theme - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"> LoveIt</a>
                 </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"></div>
         </div>
     </footer></div>
@@ -115,5 +130,5 @@
             </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
                 <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
             </a>
-        </div><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"data":{"id-1":"glob s'sulpc","id-2":"glob s'sulpc","id-3":"四海翻腾云水怒，五洲震荡风雷激。"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":200}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+        </div><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"data":{"id-1":"sulpc's blog","id-2":"sulpc's blog","id-3":"四海翻腾云水怒，五洲震荡风雷激。"},"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"],"id-3":["id-3"]},"duration":-1,"speed":200}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
 </html>

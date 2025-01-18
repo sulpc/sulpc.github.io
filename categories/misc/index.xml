@@ -1,14 +1,14 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>article - 分类 - sulpc&#39;s blog</title>
-        <link>https://sulpc.github.io/categories/article/</link>
-        <description>article - 分类 - sulpc&#39;s blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/article/" rel="self" type="application/rss+xml" /><item>
+        <title>Misc - 分类 - sulpc&#39;s blog</title>
+        <link>https://sulpc.github.io/categories/misc/</link>
+        <description>Misc - 分类 - sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/misc/" rel="self" type="application/rss+xml" /><item>
     <title>使用github.io和hugo建立博客</title>
-    <link>https://sulpc.github.io/posts/2023-09-06/</link>
+    <link>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</link>
     <pubDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
-    <guid>https://sulpc.github.io/posts/2023-09-06/</guid>
+    <guid>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</guid>
     <description><![CDATA[<p>github.io是Github免费提供的Pages服务，可发布静态页面，建立个人博客。</p>
 <p><a href="https://github.com/gohugoio/hugo" target="_blank" rel="noopener noreffer ">hugo</a>是Go编写的静态网站生成器，可将Markdown文件渲染为静态网页内容，非常适合博客、文档等网站的生成。</p>]]></description>
 </item>

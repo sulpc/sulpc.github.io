@@ -1,9 +1,9 @@
 <rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
     <channel>
-        <title>Hugo - 标签 - sulpc&#39;s blog</title>
-        <link>https://sulpc.github.io/tags/hugo/</link>
-        <description>Hugo - 标签 - sulpc&#39;s blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/tags/hugo/" rel="self" type="application/rss+xml" /><item>
+        <title>Blog - 标签 - sulpc&#39;s blog</title>
+        <link>https://sulpc.github.io/tags/blog/</link>
+        <description>Blog - 标签 - sulpc&#39;s blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/tags/blog/" rel="self" type="application/rss+xml" /><item>
     <title>使用github.io和hugo建立博客</title>
     <link>https://sulpc.github.io/posts/2023-09-06-github.io-hugo-blog/</link>
     <pubDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</pubDate>

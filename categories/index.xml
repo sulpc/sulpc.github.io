@@ -3,12 +3,20 @@
         <title>Categories - 分类 - sulpc&#39;s blog</title>
         <link>https://sulpc.github.io/categories/</link>
         <description>Categories - 分类 - sulpc&#39;s blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/" rel="self" type="application/rss+xml" /><item>
-    <title>article</title>
-    <link>https://sulpc.github.io/categories/article/</link>
+        <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/categories/" rel="self" type="application/rss+xml" /><item>
+    <title>Rtos</title>
+    <link>https://sulpc.github.io/categories/rtos/</link>
+    <pubDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</pubDate>
+    <author>suplc</author>
+    <guid>https://sulpc.github.io/categories/rtos/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Misc</title>
+    <link>https://sulpc.github.io/categories/misc/</link>
     <pubDate>Wed, 06 Sep 2023 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
-    <guid>https://sulpc.github.io/categories/article/</guid>
+    <guid>https://sulpc.github.io/categories/misc/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
