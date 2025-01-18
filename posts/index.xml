@@ -4,7 +4,7 @@
         <link>https://sulpc.github.io/posts/</link>
         <description>所有文章 | sulpc&#39;s blog</description>
         <generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</lastBuildDate><atom:link href="https://sulpc.github.io/posts/" rel="self" type="application/rss+xml" /><item>
-    <title>notos：一个基于C的无栈协程库</title>
+    <title>notos：一个类RTOS的无栈协程库</title>
     <link>https://sulpc.github.io/posts/2025-01-11-notos/</link>
     <pubDate>Sat, 11 Jan 2025 00:00:00 &#43;0000</pubDate>
     <author>suplc</author>
